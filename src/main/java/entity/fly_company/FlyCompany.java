@@ -40,8 +40,12 @@ public final class FlyCompany implements Serializable {
         this.airplaneList = airplaneList;
     }
 
-    public void add(Airplane airplane) {
+    public void addAirplane (Airplane airplane) {
         airplaneList.add(airplane);
+    }
+
+    public Airplane getAirplane (int i){
+        return airplaneList.get(i);
     }
 
     @Override
