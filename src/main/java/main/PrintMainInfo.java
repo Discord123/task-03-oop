@@ -6,6 +6,8 @@ import java.util.List;
 
 public class PrintMainInfo {
 
+    private static final String BLOCK_SEPARATOR = "--------------------------------------------------------";
+
     public static void printInfo (String s) {
         System.out.println(s);
     }
@@ -17,12 +19,11 @@ public class PrintMainInfo {
     public static void printInfo (List<Airplane> airplaneList) {
         if(airplaneList == null || airplaneList.size() == 0) {
             System.out.println("Airplane not found!");
-        }
-
-        System.out.println("--------------------------------------------------------");
-
-        for (Airplane airplane : airplaneList) {
-            System.out.println(airplane);
+        } else {
+            System.out.println(BLOCK_SEPARATOR);
+            for (Airplane airplane : airplaneList) {
+                System.out.println(airplane);
+            }
         }
     }
 }
