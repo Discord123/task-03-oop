@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.AirportService;
+import service.ServiceFactory;
+import service.impl.AirportServiceImpl;
 
 import java.util.List;
 
@@ -18,6 +20,9 @@ public class Main {
     public static void main(String[] args) {
 
         try {
+            ServiceFactory factory = ServiceFactory.getInstance();
+            AirportService service = factory.getAirportService();
+
             FlyCompany flyCompany = new FlyCompany("Belavia");
 
             flyCompany.addAirplane(new PassengerAirplane("A380", 350, 2300, 3500));
@@ -33,29 +38,29 @@ public class Main {
 
             /////////////////////////////////////////////////////////////////////////////////////////////
 
-            int totalPassengerValue = AirportService.totalPassengerValue(flyCompany);
-            PrintMainInfo.printInfo(totalPassengerValue);
+            int totalPassengerValue = service.totalPassengerValue(flyCompany);
+            PrintMainInfo.printInfo("total passenger value = " + totalPassengerValue);
 
             /////////////////////////////////////////////////////////////////////////////////////////////
 
-            int totalCargoValue = AirportService.totalCargoValue(flyCompany);
-            PrintMainInfo.printInfo(totalCargoValue);
+            int totalCargoValue = service.totalCargoValue(flyCompany);
+            PrintMainInfo.printInfo("total cargo value = " + totalCargoValue);
 
             /////////////////////////////////////////////////////////////////////////////////////////////
 
-            List<Airplane> sortAirplaneListByFlyRange = AirportService.sortAirplaneByFlyRange(flyCompany);
+            List<Airplane> sortAirplaneListByFlyRange = service.sortAirplaneByFlyRange(flyCompany);
             PrintMainInfo.printInfo(sortAirplaneListByFlyRange);
 
             /////////////////////////////////////////////////////////////////////////////////////////////
 
             List<Airplane> airplaneListWithCorrectFuelConsumption
-                    = AirportService.searchAirplaneWithCorrectFuelConsumption(2000, 2600, flyCompany);
+                    = service.searchAirplaneWithCorrectFuelConsumption(2000, 2600, flyCompany);
             PrintMainInfo.printInfo(airplaneListWithCorrectFuelConsumption);
 
             /////////////////////////////////////////////////////////////////////////////////////////////
 
             airplaneListWithCorrectFuelConsumption
-                    = AirportService.searchAirplaneWithCorrectFuelConsumption(2800, 4400, flyCompany);
+                    = service.searchAirplaneWithCorrectFuelConsumption(2800, 4400, flyCompany);
             PrintMainInfo.printInfo(airplaneListWithCorrectFuelConsumption);
 
         } catch (Exception e) {
