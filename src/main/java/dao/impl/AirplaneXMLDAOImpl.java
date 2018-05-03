@@ -4,6 +4,9 @@ import dao.AirplaneXMLDAO;
 import entity.Airplane;
 import entity.PassengerAirplane;
 import entity.TransportAirplane;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -18,6 +21,7 @@ import java.util.List;
 
 public final class AirplaneXMLDAOImpl implements AirplaneXMLDAO {
 
+    private static final Logger LOGGER = LogManager.getLogger(AirplaneXMLDAOImpl.class);
     private static final ClassLoader CLASS_LOADER = AirplaneXMLDAO.class.getClassLoader();
     private static final String FILE_PATH = CLASS_LOADER.getResource("airplane_db.xml").toString();
     private static final List<Airplane> airplaneList = new ArrayList<>();
@@ -29,12 +33,12 @@ public final class AirplaneXMLDAOImpl implements AirplaneXMLDAO {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(FILE_PATH);
             airplaneList.addAll(buildXMLObjectList(document));
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
+        } catch (ParserConfigurationException | SAXException e) {
+            LOGGER.log(Level.ERROR,"XMLBuilder error in createAirplaneList");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ERROR,"IO Error in createAirplaneList");
+        } catch (NullPointerException e) {
+            LOGGER.log(Level.ERROR,"NullPointerException in createAirplaneList");
         }
 
         return airplaneList;
