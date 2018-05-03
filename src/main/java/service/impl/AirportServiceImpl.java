@@ -1,5 +1,7 @@
 package service.impl;
 
+import dao.AirplaneXMLDAO;
+import dao.DAOFactory;
 import entity.Airplane;
 import entity.fly_company.FlyCompany;
 import service.AirportService;
@@ -11,6 +13,15 @@ import java.util.List;
 
 public class AirportServiceImpl implements AirportService {
 
+    DAOFactory factory = DAOFactory.getInstance();
+    AirplaneXMLDAO airplaneXMLDAO = factory.getAirplaneXMLDAO();
+
+    @Override
+    public List<Airplane> createAirplanes() {
+        return airplaneXMLDAO.createAirplaneList();
+    }
+
+    @Override
     public int totalPassengerValue(FlyCompany flyCompany) {
         List<Airplane> airplaneList = flyCompany.getAirplaneList();
 
@@ -22,6 +33,7 @@ public class AirportServiceImpl implements AirportService {
         return totalPassengerValue;
     }
 
+    @Override
     public int totalCargoValue (FlyCompany flyCompany) {
         List<Airplane> airplaneList = flyCompany.getAirplaneList();
 
@@ -33,6 +45,7 @@ public class AirportServiceImpl implements AirportService {
         return totalCargoValue;
     }
 
+    @Override
     public List<Airplane> sortAirplaneByFlyRange (FlyCompany flyCompany) {
         List<Airplane> airplaneList = flyCompany.getAirplaneList();
 
@@ -41,6 +54,7 @@ public class AirportServiceImpl implements AirportService {
         return airplaneList;
     }
 
+    @Override
     public List<Airplane> searchAirplaneWithCorrectFuelConsumption (int startValue, int endValue, FlyCompany flyCompany) {
         List<Airplane> airplaneList = new ArrayList<>();
 
