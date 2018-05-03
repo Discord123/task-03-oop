@@ -16,15 +16,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AirplaneXMLDAOImpl implements AirplaneXMLDAO {
+public final class AirplaneXMLDAOImpl implements AirplaneXMLDAO {
+
+    private static final ClassLoader CLASS_LOADER = AirplaneXMLDAO.class.getClassLoader();
+    private static final String FILE_PATH = CLASS_LOADER.getResource("airplane_db.xml").toString();
+    private static final List<Airplane> airplaneList = new ArrayList<>();
 
     @Override
     public List<Airplane> createAirplaneList() {
-        DocumentBuilder documentBuilder;
-        Document document = null;
+
         try {
-            documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            document = documentBuilder.parse("D://Java/task-03-oop/src/main/resources/airplane_db.xml");
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(FILE_PATH);
+            airplaneList.addAll(buildXMLObjectList(document));
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -33,35 +37,46 @@ public class AirplaneXMLDAOImpl implements AirplaneXMLDAO {
             e.printStackTrace();
         }
 
+        return airplaneList;
+    }
+
+    private static List<Airplane> buildXMLObjectList(Document document) {
+
+        List<Airplane> airplanes = new ArrayList<>();
+
         Node root = document.getDocumentElement();
 
-        NodeList airplanes = root.getChildNodes();
+        NodeList childNodes = root.getChildNodes();
 
-        List<Airplane> airplaneList = new ArrayList<>();
-
-        for (int i = 0; i < airplanes.getLength(); i++) {
-            Node airplane = airplanes.item(i);
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node airplane = childNodes.item(i);
             if (airplane.getNodeType() != Node.TEXT_NODE) {
-                NodeList airplaneVals = airplane.getChildNodes();
+                NodeList airplaneValues = airplane.getChildNodes();
                 List<String> list = new ArrayList<>();
-                for (int j = 0; j < airplaneVals.getLength(); j++) {
-                    Node airplaneVal = airplaneVals.item(j);
+                for (int j = 0; j < airplaneValues.getLength(); j++) {
+                    Node airplaneVal = airplaneValues.item(j);
                     if (airplaneVal.getNodeType() != Node.TEXT_NODE) {
                         list.add(airplaneVal.getTextContent());
-                        if(list.size() == 5){
-                            if (list.get(0).equals("PA")){
-                                airplaneList.add(new PassengerAirplane(list.get(1),Integer.parseInt(list.get(2)),
-                                        Integer.parseInt(list.get(3)),Integer.parseInt(list.get(4))));
-                            }
-                            if (list.get(0).equals("TA")){
-                                airplaneList.add(new TransportAirplane(list.get(1),Integer.parseInt(list.get(2)),
-                                        Integer.parseInt(list.get(3)),Integer.parseInt(list.get(4))));
-                            }
+                        if (list.size() == 5) {
+                            airplanes.add(createAirplane(list));
                         }
                     }
                 }
             }
         }
-        return airplaneList;
+        return airplanes;
+    }
+
+    private static Airplane createAirplane(List<String> list) {
+        Airplane airplane = null;
+        if (list.get(0).equals("PA")){
+            airplane = new PassengerAirplane(list.get(1),Integer.parseInt(list.get(2)),
+                    Integer.parseInt(list.get(3)),Integer.parseInt(list.get(4)));
+        }
+        if (list.get(0).equals("TA")){
+            airplane = new TransportAirplane(list.get(1),Integer.parseInt(list.get(2)),
+                    Integer.parseInt(list.get(3)),Integer.parseInt(list.get(4)));
+        }
+        return airplane;
     }
 }
